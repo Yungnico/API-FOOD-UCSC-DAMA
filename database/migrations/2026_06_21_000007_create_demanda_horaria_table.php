@@ -11,14 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('menus', function (Blueprint $table) {
+        Schema::create('demanda_horaria', function (Blueprint $table) {
             $table->id();
             $table->foreignId('local_id')
                 ->constrained('locals')
                 ->cascadeOnDelete();
-            $table->date('fecha');
-            $table->string('titulo');
-            $table->text('promociones')->nullable();
+            $table->unsignedTinyInteger('dia_semana');
+            $table->time('hora_inicio');
+            $table->time('hora_fin');
+            $table->string('nivel_demanda');
             $table->timestamps();
         });
     }
@@ -28,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('menus');
+        Schema::dropIfExists('demanda_horaria');
     }
 };

@@ -14,11 +14,12 @@ return new class extends Migration
         Schema::create('locals', function (Blueprint $table) {
             $table->id();
             $table->string('nombre');
-            $table->string('ubicacion');
-            $table->text('descripcion');
+            $table->text('descripcion')->nullable();
             $table->string('horario');
             $table->string('contacto');
-            $table->integer('tiempo_espera');
+            $table->decimal('latitude', 10, 7);
+            $table->decimal('longitude', 10, 7);
+            $table->unsignedSmallInteger('tiempo_espera_estatico')->default(0);
             $table->timestamps();
         });
     }

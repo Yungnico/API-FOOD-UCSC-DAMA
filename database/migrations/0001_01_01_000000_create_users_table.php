@@ -19,6 +19,9 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->rememberToken();
+            $table->text('objetivos_salud')->nullable();
+            $table->unsignedInteger('calorias_target')->default(0);
+            $table->unsignedInteger('puntos')->default(0);
             $table->timestamps();
         });
 

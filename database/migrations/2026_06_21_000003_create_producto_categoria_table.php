@@ -11,21 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('reportes', function (Blueprint $table) {
-            $table->id();
-
-            $table->foreignId('usuario_id')
-                ->constrained('users')
+        Schema::create('producto_categoria', function (Blueprint $table) {
+            $table->foreignId('producto_id')
+                ->constrained('productos')
+                ->cascadeOnDelete();
+            $table->foreignId('categoria_id')
+                ->constrained('categorias_comida')
                 ->cascadeOnDelete();
 
-            $table->foreignId('local_id')
-                ->constrained('locals')
-                ->cascadeOnDelete();
-
-            $table->text('descripcion');
-            $table->string('estado')->default('pendiente');
-
-            $table->timestamps();
+            $table->primary(['producto_id', 'categoria_id']);
         });
     }
 
@@ -34,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('reportes');
+        Schema::dropIfExists('producto_categoria');
     }
 };

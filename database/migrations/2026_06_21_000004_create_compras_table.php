@@ -11,14 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('menus', function (Blueprint $table) {
+        Schema::create('compras', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('local_id')
-                ->constrained('locals')
+            $table->foreignId('usuario_id')
+                ->constrained('users')
                 ->cascadeOnDelete();
-            $table->date('fecha');
-            $table->string('titulo');
-            $table->text('promociones')->nullable();
+            $table->foreignId('menu_producto_id')
+                ->constrained('menu_producto')
+                ->cascadeOnDelete();
+            $table->dateTime('fecha_compra');
+            $table->unsignedTinyInteger('calificacion')->nullable();
             $table->timestamps();
         });
     }
@@ -28,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('menus');
+        Schema::dropIfExists('compras');
     }
 };

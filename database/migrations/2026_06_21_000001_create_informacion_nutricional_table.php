@@ -11,20 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('menu_producto', function (Blueprint $table) {
+        Schema::create('informacion_nutricional', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('menu_id')
-                ->constrained('menus')
-                ->cascadeOnDelete();
-
             $table->foreignId('producto_id')
                 ->constrained('productos')
                 ->cascadeOnDelete();
-
-            $table->decimal('precio_venta', 10, 2);
-            $table->boolean('disponible')->default(true);
-
-            $table->unique(['menu_id', 'producto_id']);
+            $table->unsignedInteger('calorias')->default(0);
+            $table->decimal('proteina', 8, 2)->default(0);
+            $table->decimal('carbohidratos', 8, 2)->default(0);
+            $table->decimal('grasas', 8, 2)->default(0);
+            $table->decimal('sodio', 8, 2)->default(0);
+            $table->decimal('puntaje', 5, 2)->default(0);
+            $table->unique('producto_id');
             $table->timestamps();
         });
     }
@@ -34,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('menu_producto');
+        Schema::dropIfExists('informacion_nutricional');
     }
 };

@@ -11,14 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('menus', function (Blueprint $table) {
+        Schema::create('categorias_comida', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('local_id')
-                ->constrained('locals')
-                ->cascadeOnDelete();
-            $table->date('fecha');
-            $table->string('titulo');
-            $table->text('promociones')->nullable();
+            $table->string('nombre')->unique();
             $table->timestamps();
         });
     }
@@ -28,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('menus');
+        Schema::dropIfExists('categorias_comida');
     }
 };
