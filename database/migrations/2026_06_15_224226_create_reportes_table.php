@@ -19,7 +19,7 @@ return new class extends Migration
                 ->cascadeOnDelete();
 
             $table->foreignId('local_id')
-                ->constrained('locals')
+                ->constrained('locales')
                 ->cascadeOnDelete();
 
             $table->text('descripcion');

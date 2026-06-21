@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('menus', function (Blueprint $table) {
             $table->id();
             $table->foreignId('local_id')
-                ->constrained('locals')
+                ->constrained('locales')
                 ->cascadeOnDelete();
             $table->date('fecha');
             $table->string('titulo');

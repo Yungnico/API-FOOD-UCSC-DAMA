@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('demanda_horaria', function (Blueprint $table) {
             $table->id();
             $table->foreignId('local_id')
-                ->constrained('locals')
+                ->constrained('locales')
                 ->cascadeOnDelete();
             $table->unsignedTinyInteger('dia_semana');
             $table->time('hora_inicio');
