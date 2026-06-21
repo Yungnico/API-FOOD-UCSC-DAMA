@@ -13,7 +13,7 @@ class FavoritoController extends Controller
      */
     public function index()
     {
-        //
+        return response()->json(Favorito::with(['usuario', 'producto'])->get());
     }
 
     /**
@@ -21,11 +21,10 @@ class FavoritoController extends Controller
      */
     public function store(Request $request)
     {
-        $favorito = Favorito::create([
-            'user_id' => $request->user_id,
-            'menu_id' => $request->menu_id,
-            'producto_id' => $request->producto_id,
-        ]);
+        $favorito = Favorito::create($request->validate([
+            'usuario_id' => ['required', 'exists:users,id'],
+            'producto_id' => ['required', 'exists:productos,id'],
+        ]));
 
         return response()->json($favorito, 201);
     }
@@ -35,7 +34,7 @@ class FavoritoController extends Controller
      */
     public function show(string $id)
     {
-        //
+        return response()->json(Favorito::with(['usuario', 'producto'])->findOrFail($id));
     }
 
     /**
@@ -43,7 +42,13 @@ class FavoritoController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $favorito = Favorito::findOrFail($id);
+        $favorito->update($request->validate([
+            'usuario_id' => ['sometimes', 'exists:users,id'],
+            'producto_id' => ['sometimes', 'exists:productos,id'],
+        ]));
+
+        return response()->json($favorito);
     }
 
     /**
@@ -51,6 +56,8 @@ class FavoritoController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        Favorito::destroy($id);
+
+        return response()->json(['message' => 'Eliminado']);
     }
 }

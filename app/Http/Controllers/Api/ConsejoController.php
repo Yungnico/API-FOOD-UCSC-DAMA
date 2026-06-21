@@ -18,7 +18,10 @@ class ConsejoController extends Controller
 
     public function store(Request $request)
     {
-        return response()->json(Consejo::create($request->all()), 201);
+        return response()->json(Consejo::create($request->validate([
+            'descripcion' => ['required', 'string'],
+            'categoria' => ['required', 'string', 'max:255'],
+        ])), 201);
     }
 
     /**
@@ -26,7 +29,7 @@ class ConsejoController extends Controller
      */
     public function show(string $id)
     {
-        //
+        return response()->json(Consejo::findOrFail($id));
     }
 
     /**
@@ -34,7 +37,13 @@ class ConsejoController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $consejo = Consejo::findOrFail($id);
+        $consejo->update($request->validate([
+            'descripcion' => ['sometimes', 'string'],
+            'categoria' => ['sometimes', 'string', 'max:255'],
+        ]));
+
+        return response()->json($consejo);
     }
 
     /**
@@ -42,6 +51,8 @@ class ConsejoController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        Consejo::destroy($id);
+
+        return response()->json(['message' => 'Eliminado']);
     }
 }

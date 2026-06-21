@@ -13,7 +13,7 @@ class ReporteController extends Controller
      */
     public function index()
     {
-        //
+        return response()->json(Reporte::with(['usuario', 'local'])->get());
     }
 
     /**
@@ -21,7 +21,12 @@ class ReporteController extends Controller
      */
     public function store(Request $request)
     {
-        return response()->json(Reporte::create($request->all()), 201);
+        return response()->json(Reporte::create($request->validate([
+            'usuario_id' => ['required', 'exists:users,id'],
+            'local_id' => ['required', 'exists:locales,id'],
+            'descripcion' => ['required', 'string'],
+            'estado' => ['sometimes', 'string', 'max:255'],
+        ])), 201);
     }
 
     /**
@@ -29,7 +34,7 @@ class ReporteController extends Controller
      */
     public function show(string $id)
     {
-        //
+        return response()->json(Reporte::with(['usuario', 'local'])->findOrFail($id));
     }
 
     /**
@@ -37,7 +42,15 @@ class ReporteController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $reporte = Reporte::findOrFail($id);
+        $reporte->update($request->validate([
+            'usuario_id' => ['sometimes', 'exists:users,id'],
+            'local_id' => ['sometimes', 'exists:locales,id'],
+            'descripcion' => ['sometimes', 'string'],
+            'estado' => ['sometimes', 'string', 'max:255'],
+        ]));
+
+        return response()->json($reporte);
     }
 
     /**
@@ -45,6 +58,8 @@ class ReporteController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        Reporte::destroy($id);
+
+        return response()->json(['message' => 'Eliminado']);
     }
 }
