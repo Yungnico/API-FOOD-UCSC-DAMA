@@ -33,4 +33,9 @@ class Local extends Model
     {
         return $this->hasMany(Reporte::class);
     }
+
+    public function demandaHoraria()
+    {
+        return $this->hasMany(DemandaHoraria::class, 'local_id');
+    }
 }

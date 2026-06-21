@@ -26,4 +26,9 @@ class Desafio extends Model
             ->withPivot(['estado', 'fecha_inicio', 'fecha_fin'])
             ->withTimestamps();
     }
+
+    public function participantes()
+    {
+        return $this->hasMany(UsuarioDesafio::class, 'desafio_id');
+    }
 }

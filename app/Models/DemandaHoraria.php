@@ -18,6 +18,6 @@ class DemandaHoraria extends Model
 
     public function local()
     {
-        return $this->belongsTo(Local::class);
+        return $this->belongsTo(Local::class, 'local_id');
     }
 }
