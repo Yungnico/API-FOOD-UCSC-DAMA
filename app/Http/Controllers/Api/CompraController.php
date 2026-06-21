@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Compra;
+use App\Models\MenuProducto;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CompraController extends Controller
 {
@@ -34,17 +36,42 @@ class CompraController extends Controller
             abort(401, 'Debes iniciar sesión para registrar una compra.');
         }
 
-        $compra = Compra::create([
-            'usuario_id' => $usuario->id,
-            'menu_producto_id' => $data['menu_producto_id'],
-            'fecha_compra' => now(),
-            'calificacion' => $data['calificacion'] ?? null,
-        ]);
+        $result = DB::transaction(function () use ($usuario, $data) {
+            $compra = Compra::create([
+                'usuario_id' => $usuario->id,
+                'menu_producto_id' => $data['menu_producto_id'],
+                'fecha_compra' => now(),
+                'calificacion' => $data['calificacion'] ?? null,
+            ]);
 
-        return response()->json(
-            $compra->load(['usuario', 'menuProducto.producto', 'menuProducto.menu']),
-            201
-        );
+            $menuProducto = MenuProducto::with('producto.informacionNutricional', 'menu')
+                ->find($compra->menu_producto_id);
+
+            $info = $menuProducto->producto->informacionNutricional ?? null;
+
+            // Puntos: base + posible bonificación por puntaje nutricional
+            $points = 10;
+            if ($info) {
+                if (isset($info->puntaje) && $info->puntaje >= 60) {
+                    $points += 5; // Bonificación por opción saludable
+                }
+            }
+
+            $usuario->increment('puntos', $points);
+
+            $hidratacion = null;
+            if ($info && isset($info->sodio) && $info->sodio >= 400) {
+                $hidratacion = 'Elegiste un plato alto en sodio. Acompáñalo con un vaso de agua adicional.';
+            }
+
+            return [
+                'compra' => $compra->load(['usuario', 'menuProducto.producto', 'menuProducto.menu']),
+                'puntos_otorgados' => $points,
+                'mensaje_hidratacion' => $hidratacion,
+            ];
+        });
+
+        return response()->json($result, 201);
     }
 
     public function store(Request $request)
