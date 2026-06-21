@@ -6,15 +6,22 @@ use Illuminate\Database\Eloquent\Model;
 
 class Local extends Model
 {
-    protected $table = 'locals';
+    protected $table = 'locales';
 
     protected $fillable = [
         'nombre',
-        'ubicacion',
         'descripcion',
         'horario',
         'contacto',
-        'tiempo_espera'
+        'latitude',
+        'longitude',
+        'tiempo_espera_estimado'
+    ];
+
+    protected $casts = [
+        'latitude' => 'decimal:7',
+        'longitude' => 'decimal:7',
+        'tiempo_espera_estimado' => 'integer',
     ];
 
     public function menus()

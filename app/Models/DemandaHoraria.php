@@ -4,19 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Reporte extends Model
+class DemandaHoraria extends Model
 {
-    protected $fillable = [
-        'usuario_id',
-        'local_id',
-        'descripcion',
-        'estado'
-    ];
+    protected $table = 'demanda_horaria';
 
-    public function usuario()
-    {
-        return $this->belongsTo(User::class, 'usuario_id');
-    }
+    protected $fillable = [
+        'local_id',
+        'dia_semana',
+        'hora_inicio',
+        'hora_fin',
+        'nivel_demanda',
+    ];
 
     public function local()
     {

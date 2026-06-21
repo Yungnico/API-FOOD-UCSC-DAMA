@@ -23,7 +23,10 @@ class User extends Authenticatable
         'apellido_paterno',
         'apellido_materno',
         'email',
-        'password'
+        'password',
+        'objetivos_salud',
+        'calorias_target',
+        'puntos'
     ];
 
     /**
@@ -50,11 +53,11 @@ class User extends Authenticatable
     }
     public function favoritos()
     {
-        return $this->hasMany(Favorito::class);
+        return $this->hasMany(Favorito::class, 'usuario_id');
     }
 
     public function reportes()
     {
-        return $this->hasMany(Reporte::class);
+        return $this->hasMany(Reporte::class, 'usuario_id');
     }
 }

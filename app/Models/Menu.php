@@ -8,9 +8,13 @@ class Menu extends Model
 {
     protected $fillable = [
         'local_id',
-        'nombre',
-        'descripcion',
+        'fecha',
+        'titulo',
         'promociones'
+    ];
+
+    protected $casts = [
+        'fecha' => 'date',
     ];
 
     public function local()

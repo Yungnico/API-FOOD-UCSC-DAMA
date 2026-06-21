@@ -6,20 +6,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class Favorito extends Model
 {
+    protected $table = 'favoritos';
+
     protected $fillable = [
-        'user_id',
-        'menu_id',
+        'usuario_id',
         'producto_id'
     ];
 
     public function usuario()
     {
-        return $this->belongsTo(User::class, 'user_id');
-    }
-
-    public function menu()
-    {
-        return $this->belongsTo(Menu::class);
+        return $this->belongsTo(User::class, 'usuario_id');
     }
 
     public function producto()
