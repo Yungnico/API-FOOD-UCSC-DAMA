@@ -28,6 +28,6 @@ class UsuarioDesafio extends Model
 
     public function desafio()
     {
-        return $this->belongsTo(Desafio::class);
+        return $this->belongsTo(Desafio::class, 'desafio_id');
     }
 }

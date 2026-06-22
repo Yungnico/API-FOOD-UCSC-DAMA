@@ -14,6 +14,11 @@ class CategoriaComida extends Model
 
     public function productos()
     {
-        return $this->belongsToMany(Producto::class, 'producto_categoria');
+        return $this->belongsToMany(
+            Producto::class,
+            'producto_categoria',
+            'categoria_id',
+            'producto_id'
+        );
     }
 }

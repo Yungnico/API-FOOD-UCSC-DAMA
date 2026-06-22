@@ -22,7 +22,12 @@ class Desafio extends Model
 
     public function usuarios()
     {
-        return $this->belongsToMany(User::class, 'usuario_desafio')
+        return $this->belongsToMany(
+            User::class,
+            'usuario_desafio',
+            'desafio_id',
+            'usuario_id'
+        )
             ->withPivot(['estado', 'fecha_inicio', 'fecha_fin'])
             ->withTimestamps();
     }

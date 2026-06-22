@@ -63,7 +63,12 @@ class User extends Authenticatable
 
     public function desafios()
     {
-        return $this->belongsToMany(Desafio::class, 'usuario_desafio')
+        return $this->belongsToMany(
+            Desafio::class,
+            'usuario_desafio',
+            'usuario_id',
+            'desafio_id'
+        )
             ->withPivot(['estado', 'fecha_inicio', 'fecha_fin'])
             ->withTimestamps();
     }
