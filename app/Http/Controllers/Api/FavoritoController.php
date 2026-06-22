@@ -16,6 +16,15 @@ class FavoritoController extends Controller
         return response()->json(Favorito::with(['usuario', 'producto'])->get());
     }
 
+    public function porUsuario(string $id)
+    {
+        return response()->json(
+            Favorito::with('producto')
+                ->where('usuario_id', $id)
+                ->get()
+        );
+    }
+
     /**
      * Store a newly created resource in storage.
      */

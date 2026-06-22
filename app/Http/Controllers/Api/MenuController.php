@@ -14,6 +14,16 @@ class MenuController extends Controller
         return response()->json(Menu::with(['local', 'productos'])->get());
     }
 
+    public function menusPorLocal($id)
+    {
+        return response()->json(
+            Menu::with(['local', 'productos'])
+                ->where('local_id', $id)
+                ->orderByDesc('fecha')
+                ->get()
+        );
+    }
+
     public function store(Request $request)
     {
         $menu = Menu::create($request->validate([
