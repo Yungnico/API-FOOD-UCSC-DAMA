@@ -19,6 +19,7 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::apiResource('locales', LocalController::class);
+Route::get('locales/{id}/menus', [MenuController::class, 'menusPorLocal']);
 Route::apiResource('menus', MenuController::class);
 Route::apiResource('productos', ProductoController::class);
 Route::apiResource('categorias-comida', CategoriaComidaController::class);
@@ -30,5 +31,6 @@ Route::apiResource('demanda-horaria', DemandaHorariaController::class);
 Route::get('productos/{id}/informacion-nutricional', [ProductoController::class, 'informacionNutricional']);
 Route::put('productos/{id}/categorias', [ProductoController::class, 'syncCategorias']);
 Route::apiResource('favoritos', FavoritoController::class);
+Route::get('usuarios/{id}/favoritos', [FavoritoController::class, 'porUsuario']);
 Route::apiResource('reportes', ReporteController::class);
 Route::apiResource('consejos', ConsejoController::class);
