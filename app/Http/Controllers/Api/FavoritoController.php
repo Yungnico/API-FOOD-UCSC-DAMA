@@ -16,6 +16,17 @@ class FavoritoController extends Controller
         return response()->json(Favorito::with(['usuario', 'producto'])->get());
     }
 
+    public function mios(Request $request)
+    {
+        $user = $request->user();
+
+        return response()->json(
+            Favorito::with('producto')
+                ->where('usuario_id', $user?->id)
+                ->get()
+        );
+    }
+
     public function porUsuario(string $id)
     {
         return response()->json(
