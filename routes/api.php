@@ -31,7 +31,7 @@ Route::apiResource('productos', ProductoController::class);
 Route::apiResource('categorias-comida', CategoriaComidaController::class);
 Route::apiResource('informacion-nutricional', InformacionNutricionalController::class);
 Route::post('compras/registrar', [CompraController::class, 'registrar'])->middleware('auth:sanctum');
-Route::apiResource('compras', CompraController::class);
+Route::apiResource('compras', CompraController::class)->middleware('auth:sanctum');
 Route::apiResource('desafios', DesafioController::class);
 Route::apiResource('demanda-horaria', DemandaHorariaController::class);
 Route::get('productos/{id}/informacion-nutricional', [ProductoController::class, 'informacionNutricional']);
