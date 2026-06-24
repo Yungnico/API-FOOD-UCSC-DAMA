@@ -12,7 +12,7 @@ class CompraController extends Controller
 {
     public function index()
     {
-        return response()->json(Compra::with(['usuario', 'menuProducto.producto', 'menuProducto.menu'])
+        return response()->json(Compra::with(['usuario', 'menuProducto.producto', 'menuProducto.menu.local'])
             ->when(request()->filled('usuario_id'), function ($query) {
                 $query->where('usuario_id', request()->integer('usuario_id'));
             })
@@ -65,7 +65,7 @@ class CompraController extends Controller
             }
 
             return [
-                'compra' => $compra->load(['usuario', 'menuProducto.producto', 'menuProducto.menu']),
+                'compra' => $compra->load(['usuario', 'menuProducto.producto', 'menuProducto.menu.local']),
                 'puntos_otorgados' => $points,
                 'mensaje_hidratacion' => $hidratacion,
             ];
@@ -98,7 +98,7 @@ class CompraController extends Controller
 
     public function show(string $id)
     {
-        return response()->json(Compra::with(['usuario', 'menuProducto.producto', 'menuProducto.menu'])->findOrFail($id));
+        return response()->json(Compra::with(['usuario', 'menuProducto.producto', 'menuProducto.menu.local'])->findOrFail($id));
     }
 
     public function update(Request $request, string $id)
