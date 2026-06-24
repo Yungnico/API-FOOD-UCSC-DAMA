@@ -22,6 +22,7 @@ Route::get('/user', function (Request $request) {
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
 Route::get('me', [AuthController::class, 'me'])->middleware('auth:sanctum');
+Route::get('me/resumen-nutricional', [AuthController::class, 'nutritionSummary'])->middleware('auth:sanctum');
 Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
 Route::apiResource('locales', LocalController::class);

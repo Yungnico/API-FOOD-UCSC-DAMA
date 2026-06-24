@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Compra;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -69,6 +70,51 @@ class AuthController extends Controller
         return response()->json($request->user());
     }
 
+    public function nutritionSummary(Request $request)
+    {
+        $user = $request->user();
+
+        if ($user === null) {
+            abort(401, 'Debes iniciar sesión para ver el resumen nutricional.');
+        }
+
+        $purchases = Compra::with(['menuProducto.producto.informacionNutricional', 'menuProducto.menu.local'])
+            ->where('usuario_id', $user->id)
+            ->latest('fecha_compra')
+            ->get();
+
+        $dailyCalories = $purchases
+            ->filter(fn (Compra $purchase) => $purchase->fecha_compra?->isSameDay(now()) ?? false)
+            ->sum(fn (Compra $purchase) => $this->purchaseCalories($purchase));
+
+        $weeklyData = collect(range(6, 0))->map(function (int $daysAgo) use ($purchases) {
+            $date = now()->subDays($daysAgo)->startOfDay();
+
+            return [
+                'date' => $this->dayLabel($date),
+                'calories' => $purchases
+                    ->filter(fn (Compra $purchase) => $purchase->fecha_compra?->isSameDay($date) ?? false)
+                    ->sum(fn (Compra $purchase) => $this->purchaseCalories($purchase)),
+            ];
+        })->values();
+
+        $purchasedItems = $purchases->take(6)->map(function (Compra $purchase) {
+            return [
+                'name' => $purchase->menuProducto?->producto?->nombre ?? 'Producto',
+                'calories' => $this->purchaseCalories($purchase),
+                'local' => $purchase->menuProducto?->menu?->local?->nombre,
+                'date' => $purchase->fecha_compra?->toDateString(),
+            ];
+        })->values();
+
+        return response()->json([
+            'daily_calories' => $dailyCalories,
+            'calorie_goal' => $user->calorias_target ?? 2200,
+            'weekly_data' => $weeklyData,
+            'purchased_items' => $purchasedItems,
+        ]);
+    }
+
     public function logout(Request $request)
     {
         $request->user()?->currentAccessToken()?->delete();
@@ -76,5 +122,15 @@ class AuthController extends Controller
         return response()->json([
             'message' => 'Sesion cerrada',
         ]);
+    }
+
+    private function purchaseCalories(Compra $purchase): int
+    {
+        return (int) ($purchase->menuProducto?->producto?->informacionNutricional?->calorias ?? 0);
+    }
+
+    private function dayLabel($date): string
+    {
+        return ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'][(int) $date->dayOfWeek];
     }
 }
