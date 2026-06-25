@@ -26,6 +26,7 @@ class FoodCatalogSeeder extends Seeder
             'Comida rápida',
             'Bebidas',
             'Postres',
+            'Desayunos',
         ];
 
         $categoryModels = [];
