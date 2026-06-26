@@ -15,6 +15,49 @@ class ProductoController extends Controller
         return response()->json(Producto::with(['menus', 'informacionNutricional', 'categorias'])->get());
     }
 
+    public function tendencias(Request $request)
+    {
+        $days = max(1, (int) $request->integer('days', 30));
+        $windowStart = now()->subDays($days);
+
+        $recentProductIds = DB::table('compras')
+            ->join('menu_producto', 'compras.menu_producto_id', '=', 'menu_producto.id')
+            ->where('compras.fecha_compra', '>=', $windowStart)
+            ->select('menu_producto.producto_id', DB::raw('COUNT(*) as total_compras'))
+            ->groupBy('menu_producto.producto_id')
+            ->orderByDesc('total_compras')
+            ->orderByDesc('menu_producto.producto_id')
+            ->limit(10)
+            ->pluck('producto_id')
+            ->all();
+
+        if (empty($recentProductIds)) {
+            $recentProductIds = DB::table('compras')
+                ->join('menu_producto', 'compras.menu_producto_id', '=', 'menu_producto.id')
+                ->select('menu_producto.producto_id', DB::raw('COUNT(*) as total_compras'))
+                ->groupBy('menu_producto.producto_id')
+                ->orderByDesc('total_compras')
+                ->orderByDesc('menu_producto.producto_id')
+                ->limit(10)
+                ->pluck('producto_id')
+                ->all();
+        }
+
+        if (empty($recentProductIds)) {
+            return response()->json([]);
+        }
+
+        $orderMap = array_flip($recentProductIds);
+
+        $products = Producto::with(['menus', 'informacionNutricional', 'categorias'])
+            ->whereIn('id', $recentProductIds)
+            ->get()
+            ->sortBy(fn (Producto $producto) => $orderMap[$producto->id] ?? PHP_INT_MAX)
+            ->values();
+
+        return response()->json($products);
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
