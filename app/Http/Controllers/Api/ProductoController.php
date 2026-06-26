@@ -20,17 +20,13 @@ class ProductoController extends Controller
         $days = max(1, (int) $request->integer('days', 30));
         $windowStart = now()->subDays($days);
 
-        $recentProductIds = DB::table('compras')
-            ->join('menu_producto', 'compras.menu_producto_id', '=', 'menu_producto.id')
-            ->where('compras.fecha_compra', '>=', $windowStart)
-            ->select('menu_producto.producto_id', DB::raw('COUNT(*) as total_compras'))
-            ->groupBy('menu_producto.producto_id')
-            ->orderByDesc('total_compras')
-            ->orderByDesc('menu_producto.producto_id')
+        $recentProductIds = DB::table('favoritos')
+            ->select('producto_id', DB::raw('COUNT(*) as total_favs'))
+            ->groupBy('producto_id')
+            ->orderByDesc('total_favs')
             ->limit(10)
             ->pluck('producto_id')
             ->all();
-
         if (empty($recentProductIds)) {
             $recentProductIds = DB::table('compras')
                 ->join('menu_producto', 'compras.menu_producto_id', '=', 'menu_producto.id')
